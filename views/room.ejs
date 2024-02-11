@@ -1,21 +1,47 @@
 <%- include("./partials/header") %>
 
-<h1>Your Chat</h1>
-<% room.messages.forEach(message => { %>
-    <%= message.message %>
-<% }) %>
+<div class="nav">
+    <div class="delete-room form">
+        <form action="/room/delete" method="post">
+            <input type="submit" value="Delete chat" class="btn btn-danger" placeholder="Enter your message">
+        </form>
+    </div>
+    
+    <div class="logout form">
+        <form action="/auth/logout" method="get">
+            <input type="submit" value="Logout" class="btn">
+        </form>
+    </div>
+</div>
 
-<br>
-<br>
-<form action="/send" method="post">
-    <label for="message">message</label>
-    <input type="text" name="message" id="message">
-    <input type="submit" value="Send">
-</form>
+<h1>Chatroom <%= roomID %></h1>
 
-<form action="/logout" method="post">
-    <input type="submit" value="Logout">
-</form>
+<div class="messages-container">
+    <% messages.forEach(messagesOnSameDay => { %>
+        <div class="date-container">
+            <p><%= messagesOnSameDay[0].creationDate %></p>
+        </div>
+        <% messagesOnSameDay.forEach(message => { %>
+            <div class="message-box">
+                <div class="message-header">
+                    <p class="message-username"><%= message.userName %> </p>
+                    <p class="message-time"><%= message.creationTime %></p>
+                </div>
+                <div class="message-body">
+                    <p class="message-text"><%= message.text %></p>
+                </div>
+            </div>
+        <% }) %>
+    <% }) %>
+</div>
+
+<div class="send-message-form">
+    <form action="/room" method="post">
+        <input type="text" name="message" id="message" class="text-input" placeholder="Enter Message" required>
+        <input type="submit" value="Send" class="btn">
+    </form>
+</div>
+
 
 </body>
 </html>

@@ -1,8 +1,13 @@
-<h1>Created new Chat Room!</h1>
-<p>Careful! The following Room ID and Password is required to login to the Chatroom. This Information is not stored anywhere, please safe it somewhere.</p>
-<h3>Details:</h3>
-<ul>
-    <li>Room ID: <%= result.room %></li>
-    <li>Password: <%= result.password %></li>
-</ul>
+
+<% if (locals.error) { %>
+    <h1>Error Creating new Chat Room!</h1>
+<% } else { %>
+    <h1>Created new Chat Room!</h1>
+    <p>Careful! The following Room ID and Password is required to login to the Chatroom. This Information is not stored anywhere, please safe it somewhere.</p>
+    <h3>Details:</h3>
+    <ul>
+        <li>Room ID: <%= roomID %></li>
+        <li>Password: <%= password %></li>
+    </ul>
+<% } %>
 <a href="/">Login</a>

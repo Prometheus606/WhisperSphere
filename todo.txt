@@ -1,8 +1,11 @@
-Aktuell ist die API fertig. man kann neue räume erstellen, nachrichten verschicken und diese anzeigen lassen. 
-auch räume löschen mitsamt der nachrichten ist möglich. das password des raumes sowie die nachrichten selbst werden verschlüsselt. 
-als key für die nachrichten gilt das passwort des jeweiligen raumes
 
 schritte:
 - im frontend oder backend sollte die eingegebene password länge und qualität überprüft werden!
-- authentication fertigstellen
-- routen in auth und room fertigstellen/ anpassen. waren als api gebaut, soll aber websites rendern statt json zurückzugeben
+- zum verschlüsseln der Nachrichten wird der password hash verwendet, unsicher!
+- fehlerbehandlung und redirects anpassen
+- frontend schöner machen
+- falls kein nickName random name
+
+- in db.js create table if not exists einfügen
+- tabellen in pgadmin so wie auf laptop anpassen (siehe bilder)
+- datenbank umbenennen in whispersphere

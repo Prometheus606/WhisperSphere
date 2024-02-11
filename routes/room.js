@@ -1,43 +1,63 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt")
 const CryptoJS = require('crypto-js');
-const generatePassword = require("../utils/randomKey")
 
-router.get("/:id", async (req, res) => {
+router.get("/", async (req, res) => {
     if (!req.isAuthenticated()) return res.redirect("/")
 
     const db = req.db
-    const roomID = req.params.id
-    const password = req.body.password
+    const roomID = req.user.id
+    const password = req.user.password
 
     try {
-        let result = await db.query("SELECT * FROM rooms WHERE id=$1", [roomID])
-
-        if (result.rows.length !== 1) return res.json({success:false, error: "Cannot find room or Password and room ID does not match."})
-
-        let room = result.rows[0]
-
-        const isValid = await bcrypt.compare(password, room.password)
-
-        if (!isValid) return res.json({success:false, error: "Cannot find room or Password and room ID does not match."})
-
-        result = await db.query("SELECT * FROM messages WHERE room_id=$1", [roomID])
+        let result = await db.query("SELECT * FROM messages WHERE room_id=$1 ORDER BY creationdate ASC", [roomID])
 
         const messages = []
+        let messagesOnSameDay = []
+        let date = "";
         result.rows.forEach(row => {
 
             const decryptedBytes = CryptoJS.AES.decrypt(row.message, password);
             const decryptedMessage = decryptedBytes.toString(CryptoJS.enc.Utf8);
 
-            messages.push({
+            // Datum formatieren (10.02.2024)
+            const formattedDate = row.creationdate.toLocaleDateString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+            
+            // Uhrzeit formatieren (18:30)
+            const formattedTime = row.creationdate.toLocaleTimeString("de-DE", {
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+
+            if (date === "") {
+                date = formattedDate
+            }
+
+            if (formattedDate !== date && messagesOnSameDay.length > 0) {
+                console.log("jo");
+                messages.push(messagesOnSameDay)
+                messagesOnSameDay = []
+                date = formattedDate
+            }
+
+            messagesOnSameDay.push({
                 messageID: row.id,
                 roomID: row.room_id,
-                creationDate: row.creationdate,
-                message: decryptedMessage
+                creationDate: formattedDate,
+                creationTime: formattedTime,
+                text: decryptedMessage,
+                userName: row.username
             })
+            
         });
 
-        res.json({
+        messages.push(messagesOnSameDay)
+
+        res.render("room", {
             success: true,
             roomID,
             messages
@@ -45,93 +65,47 @@ router.get("/:id", async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.json({error: "Error get Messages."})
+        res.render("index", {error: "Error get Messages."})
     }
 })
 
-router.post("/new", async (req, res) => {
-    const db = req.db
-    console.log(req.body);
-    let password = req.body.password
-    if (!password) {
-        password = generatePassword(Math.floor((Math.random() * 8) + 12))
-    }
-
-    try {
-        const passwordHash = await bcrypt.hash(password, 10)
-        const result = await db.query("INSERT INTO rooms (password) VALUES ($1) RETURNING *", [passwordHash])
-
-        res.json({
-            success: true,
-            room: result.rows[0].id,
-            creationDate: result.rows[0].creationdate,
-            password,
-            message: "Save the Password! It is not stored anywhere."
-        })
-    } catch (error) {
-        console.log(error);
-        res.json({success:false, error: "Error creating room."})
-    }
-})
-
-router.post("/:id", async (req, res) => {
+router.post("/", async (req, res) => {
     if (!req.isAuthenticated()) return res.redirect("/")
 
     const db = req.db
-    const roomID = req.params.id
-    const password = req.body.password
+    const roomID = req.user.id
+    const password = req.user.password
     const message = req.body.message
+    const userName = req.user.userName
 
     try {
-        let result = await db.query("SELECT * FROM rooms WHERE id=$1", [roomID])
-
-        if (result.rows.length !== 1) return res.json({success:false, error: "Cannot find room or Password and room ID does not match."})
-
-        let room = result.rows[0]
-
-        const isValid = await bcrypt.compare(password, room.password)
-
-        if (!isValid) return res.json({success:false, error: "Cannot find room or Password and room ID does not match."})
-
         const encryptedMessage = CryptoJS.AES.encrypt(message, password).toString();
-        await db.query("INSERT INTO messages (room_id, message) VALUES ($1, $2)", [roomID, encryptedMessage])
+        await db.query("INSERT INTO messages (room_id, message, username) VALUES ($1, $2, $3)", [roomID, encryptedMessage, userName])
     
-        res.redirect(`/room/${roomID}`)
+        res.redirect(`/room`)
 
     } catch (error) {
         console.log(error);
-        res.json({error: "Error sending Message."})
+        res.render("index", {error: "Error sending Message."})
     }
 })
 
-router.delete("/:id", async (req, res) => {
+router.post("/delete", async (req, res) => {
     if (!req.isAuthenticated()) return res.redirect("/")
     
     const db = req.db
-    const roomID = req.params.id
-    const password = req.body.password
+    const roomID = req.user.id
 
     try {
-        let result = await db.query("SELECT * FROM rooms WHERE id=$1", [roomID])
-
-        if (result.rows.length !== 1) return res.json({success:false, error: "Cannot find room or Password and room ID does not match."})
-
-        let room = result.rows[0]
-
-        const isValid = await bcrypt.compare(password, room.password)
-
-        if (!isValid) return res.json({success:false, error: "Cannot find room or Password and room ID does not match."})
-
         await db.query("DELETE FROM messages WHERE room_id=$1", [roomID])
         await db.query("DELETE FROM rooms WHERE id=$1", [roomID])
 
-        res.json({
-            success: true,
-            message: `Successful deleted room ${room.id}.`
+        res.render("index", {
+            error: `Successful deleted room ${roomID}.`
         })
     } catch (error) {
         console.log(error);
-        res.json({error: "Error deleting room."})
+        res.render("index", {error: "Error deleting room."})
     }
 })
 
