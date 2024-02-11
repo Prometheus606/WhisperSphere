@@ -1,0 +1,21 @@
+<%- include("./partials/header") %>
+
+<h1>Your Chat</h1>
+<% room.messages.forEach(message => { %>
+    <%= message.message %>
+<% }) %>
+
+<br>
+<br>
+<form action="/send" method="post">
+    <label for="message">message</label>
+    <input type="text" name="message" id="message">
+    <input type="submit" value="Send">
+</form>
+
+<form action="/logout" method="post">
+    <input type="submit" value="Logout">
+</form>
+
+</body>
+</html>

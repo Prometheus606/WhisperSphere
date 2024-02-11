@@ -1,0 +1,29 @@
+<%- include("./partials/header") %>
+
+<h1>Join Room</h1>
+<% if (locals.error) { %>
+    <p><%= error %></p>
+<% } %>
+<form action="/room/join" method="post">
+    <label for="roomID">Room ID</label>
+    <input type="number" name="roomID" id="roomID" required>
+    <br>
+    <br>
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password" required>
+    <br>
+    <br>
+    <input type="submit" name="submit" id="submit" value="Join">
+</form>
+
+<h2>Create Room</h2>
+<form action="/room/create" method="post">
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password">
+    <br>
+    <br>
+    <input type="submit" name="submit" id="submit" value="Create">
+</form>
+
+</body>
+</html>
