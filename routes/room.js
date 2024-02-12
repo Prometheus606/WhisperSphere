@@ -67,7 +67,8 @@ router.get("/", async (req, res) => {
         const params = {
                 success: true,
                 roomID,
-                messages
+                messages,
+                userName: req.user.userName
         }
 
         if (req.session.messagesError) {
@@ -115,6 +116,11 @@ router.post("/create", async (req, res) => {
     if (!password) {
         password = generatePassword(Math.floor((Math.random() * 8) + 12))
     }
+
+    // if (password.length < 8 || !/[0-9]/.test(password) || !/[a-zA-Z]/.test(password) || !/[^a-zA-Z0-9]/.test(password)) {
+    //     req.session.createError = "Password too weak! Please use at least 8 characters with 1 number, 1 letter, and 1 special character or leave it blank to generate one."
+    //     return res.redirect("/")
+    // }
 
     try {
         const passwordHash = await bcrypt.hash(password, 10)

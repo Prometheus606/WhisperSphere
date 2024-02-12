@@ -9,12 +9,13 @@
 <div class="form-container">
     <div class="join-container">
         <h2>Join Room</h2>
+        <p>For Global Chat: ID and password 12345</p>
         <% if (locals.joinError) { %>
             <p class="error-text"><%= joinError %></p>
         <% } %>
 
         <form action="/auth/login" method="post" class="form">
-            <input type="text" name="userName" id="userName" placeholder="Enter nickname" required class="text-input"><br><br>
+            <input type="text" name="userName" id="userName" placeholder="Enter nickname (optional)" class="text-input"><br><br>
             <input type="number" name="roomID" id="roomID" placeholder="Enter room ID" required class="text-input"><br><br>
             <input type="password" name="password" placeholder="Enter Password" required class="text-input"><br><br>
             <input type="submit" name="submit" value="Join" class="btn">

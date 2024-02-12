@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
+const generateRandomUserName = require('../utils/randomUserNames');
 
 const settings = {
     usernameField: "roomID",
@@ -18,9 +19,11 @@ passport.use(new LocalStrategy(settings, async function(req, roomID, password, c
     
         const isValid = await bcrypt.compare(password, room.password);
 
-        room.userName = req.body.userName
+        if (!req.body.userName) room.userName = generateRandomUserName()
+            else room.userName = req.body.userName
+        
         if (isValid) return cb(null, room);
-        else return cb(null, false);
+            else return cb(null, false);
 
     } catch (error) {
         return cb(error);

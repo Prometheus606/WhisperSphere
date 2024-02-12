@@ -1,3 +1,3 @@
 
-- im frontend oder backend sollte die eingegebene password länge und qualität überprüft werden!
-- falls kein nickName random name
+- font family, buttons, text inputs and colors
+- every user a diffrent color in chat room
