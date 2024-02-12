@@ -2,26 +2,33 @@
 
 <h1>Whisper Sphere</h1>
 
-<div class="container">
+<% if (locals.generalError) { %>
+    <p class="error-text"><%= generalError %></p>
+<% } %>
+
+<div class="form-container">
     <div class="join-container">
         <h2>Join Room</h2>
-        <% if (locals.error) { %>
-            <p class="error-text"><%= error %></p>
+        <% if (locals.joinError) { %>
+            <p class="error-text"><%= joinError %></p>
         <% } %>
 
         <form action="/auth/login" method="post" class="form">
             <input type="text" name="userName" id="userName" placeholder="Enter nickname" required class="text-input"><br><br>
             <input type="number" name="roomID" id="roomID" placeholder="Enter room ID" required class="text-input"><br><br>
-            <input type="password" name="password" id="password" placeholder="Enter Password" required class="text-input"><br><br>
-            <input type="submit" name="submit" id="submit" value="Join" class="btn">
+            <input type="password" name="password" placeholder="Enter Password" required class="text-input"><br><br>
+            <input type="submit" name="submit" value="Join" class="btn">
         </form>
     </div>
     
     <div class="create-container">
         <h2>Create Room</h2>
-        <form action="/auth/register" method="post" class="form">
-            <input type="password" name="password" id="password" placeholder="Enter Password" class="text-input"><br><br>
-            <input type="submit" name="submit" id="submit" value="Create" class="btn">
+        <% if (locals.createError) { %>
+            <p class="error-text"><%= createError %></p>
+        <% } %>
+        <form action="/room/create" method="post" class="form">
+            <input type="password" name="password" placeholder="Enter Password" class="text-input"><br><br>
+            <input type="submit" name="submit" value="Create" class="btn">
         </form>
     </div>
 

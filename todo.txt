@@ -1,11 +1,3 @@
 
-schritte:
 - im frontend oder backend sollte die eingegebene password länge und qualität überprüft werden!
-- zum verschlüsseln der Nachrichten wird der password hash verwendet, unsicher!
-- fehlerbehandlung und redirects anpassen
-- frontend schöner machen
 - falls kein nickName random name
-
-- in db.js create table if not exists einfügen
-- tabellen in pgadmin so wie auf laptop anpassen (siehe bilder)
-- datenbank umbenennen in whispersphere

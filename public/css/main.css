@@ -1,0 +1,61 @@
+@import url("./variables.css");
+@import url("./index.css");
+@import url("./newRoom.css");
+@import url("./room.css");
+
+body {
+    background-color: var(--bg-color);
+    margin: 0px;
+    padding: 0px;
+    color: var(--fg-color-primary)
+}
+
+.nav {
+    display: flex;
+    position: fixed;
+    top: .5rem;
+    right: .5rem;
+}
+
+h1 {
+    text-align: center;
+}
+
+.error-text {
+    color: red;
+    text-align: center;
+}
+
+li {
+    list-style: none;
+    padding: 1rem;
+    font-weight: bolder;
+}
+
+a {
+    text-decoration: none;
+    color:var(--fg-color-primary);
+    text-align: center;
+    
+}
+
+.text-input {
+    width: 40%;
+    height: 2rem;
+    border-radius: 1rem;
+}
+
+.btn {
+    padding: 1rem;
+    min-width: 6rem;
+    border-radius: 8px;
+    font-size: 20px;
+    margin-right: 1rem;
+    background-color: var(--date-bg-color);
+    border: 1px solid black;
+    box-shadow: 0px 1px;
+}
+
+.btn-danger {
+    background-color: var(--btn-bg-color-danger);
+}

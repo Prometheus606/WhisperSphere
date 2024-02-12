@@ -17,25 +17,30 @@
 <h1>Chatroom <%= roomID %></h1>
 
 <div class="messages-container">
-    <% messages.forEach(messagesOnSameDay => { %>
-        <div class="date-container">
-            <p><%= messagesOnSameDay[0].creationDate %></p>
-        </div>
-        <% messagesOnSameDay.forEach(message => { %>
-            <div class="message-box">
-                <div class="message-header">
-                    <p class="message-username"><%= message.userName %> </p>
-                    <p class="message-time"><%= message.creationTime %></p>
-                </div>
-                <div class="message-body">
-                    <p class="message-text"><%= message.text %></p>
-                </div>
+    <% if (locals.messages && locals.messages[0].length > 0) { %>
+        <% messages.forEach(messagesOnSameDay => { %>
+            <div class="date-container">
+                <p><%= messagesOnSameDay[0].creationDate %></p>
             </div>
+            <% messagesOnSameDay.forEach(message => { %>
+                <div class="message-box">
+                    <div class="message-header">
+                        <p class="message-username"><%= message.userName %> </p>
+                        <p class="message-time"><%= message.creationTime %></p>
+                    </div>
+                    <div class="message-body">
+                        <p class="message-text"><%= message.text %></p>
+                    </div>
+                </div>
+            <% }) %>
         <% }) %>
-    <% }) %>
+    <% } %>
 </div>
 
 <div class="send-message-form">
+    <% if (locals.messagesError) { %>
+        <p class="error-text"><%= messagesError %></p>
+    <% } %>
     <form action="/room" method="post">
         <input type="text" name="message" id="message" class="text-input" placeholder="Enter Message" required>
         <input type="submit" value="Send" class="btn">

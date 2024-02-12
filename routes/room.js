@@ -1,13 +1,17 @@
 const router = require("express").Router();
-const bcrypt = require("bcrypt")
 const CryptoJS = require('crypto-js');
+const generatePassword = require("../utils/randomKey")
+const bcrypt = require("bcrypt")
+
 
 router.get("/", async (req, res) => {
-    if (!req.isAuthenticated()) return res.redirect("/")
+    if (!req.isAuthenticated()) {
+        req.session.generalError = "You are not authenticated."
+        return res.redirect("/")
+    }
 
     const db = req.db
     const roomID = req.user.id
-    const password = req.user.password
 
     try {
         let result = await db.query("SELECT * FROM messages WHERE room_id=$1 ORDER BY creationdate ASC", [roomID])
@@ -15,30 +19,33 @@ router.get("/", async (req, res) => {
         const messages = []
         let messagesOnSameDay = []
         let date = "";
+
+        // action for each message in database
         result.rows.forEach(row => {
 
-            const decryptedBytes = CryptoJS.AES.decrypt(row.message, password);
+            //decrypt message
+            const decryptedBytes = CryptoJS.AES.decrypt(row.message, process.env.MESSAGE_SECRET);
             const decryptedMessage = decryptedBytes.toString(CryptoJS.enc.Utf8);
 
-            // Datum formatieren (10.02.2024)
+            // Datum format (10.02.2024)
             const formattedDate = row.creationdate.toLocaleDateString("de-DE", {
                 day: "2-digit",
                 month: "2-digit",
                 year: "numeric"
             });
             
-            // Uhrzeit formatieren (18:30)
+            // Uhrzeit format (18:30)
             const formattedTime = row.creationdate.toLocaleTimeString("de-DE", {
                 hour: "2-digit",
                 minute: "2-digit"
             });
 
+            // for date seperation in the chat. for each day is a box shown with the date, and then all messages of that day
             if (date === "") {
                 date = formattedDate
             }
 
             if (formattedDate !== date && messagesOnSameDay.length > 0) {
-                console.log("jo");
                 messages.push(messagesOnSameDay)
                 messagesOnSameDay = []
                 date = formattedDate
@@ -57,41 +64,82 @@ router.get("/", async (req, res) => {
 
         messages.push(messagesOnSameDay)
 
-        res.render("room", {
-            success: true,
-            roomID,
-            messages
-        })
+        const params = {
+                success: true,
+                roomID,
+                messages
+        }
+
+        if (req.session.messagesError) {
+            params.messagesError = req.session.messagesError
+        }
+
+        res.render("room", params)
 
     } catch (error) {
         console.log(error);
-        res.render("index", {error: "Error get Messages."})
+        req.session.generalError = "Error getting Messages."
+        res.redirect("/")
     }
 })
 
 router.post("/", async (req, res) => {
-    if (!req.isAuthenticated()) return res.redirect("/")
+    if (!req.isAuthenticated()) {
+        req.session.generalError = "You are not authenticated."
+        return res.redirect("/")
+    }
 
     const db = req.db
     const roomID = req.user.id
-    const password = req.user.password
     const message = req.body.message
     const userName = req.user.userName
 
     try {
-        const encryptedMessage = CryptoJS.AES.encrypt(message, password).toString();
+        const encryptedMessage = CryptoJS.AES.encrypt(message, process.env.MESSAGE_SECRET).toString();
+        
         await db.query("INSERT INTO messages (room_id, message, username) VALUES ($1, $2, $3)", [roomID, encryptedMessage, userName])
     
         res.redirect(`/room`)
 
     } catch (error) {
         console.log(error);
-        res.render("index", {error: "Error sending Message."})
+        req.session.messagesError = "Error sending Message."
+        res.redirect("/room")
+    }
+})
+
+router.post("/create", async (req, res) => {
+    const db = req.db
+    let password = req.body.password
+
+    if (!password) {
+        password = generatePassword(Math.floor((Math.random() * 8) + 12))
+    }
+
+    try {
+        const passwordHash = await bcrypt.hash(password, 10)
+        const result = await db.query("INSERT INTO rooms (password) VALUES ($1) RETURNING *", [passwordHash])
+
+        res.render("newRoom", {
+            success: true,
+            roomID: result.rows[0].id,
+            creationDate: result.rows[0].creationdate,
+            password,
+            message: "Save the Password! It is not stored anywhere."
+        })
+        
+    } catch (error) {
+        console.log(error);
+        req.session.createError = "Error creating room."
+        res.redirect("/")
     }
 })
 
 router.post("/delete", async (req, res) => {
-    if (!req.isAuthenticated()) return res.redirect("/")
+    if (!req.isAuthenticated()) {
+        req.session.generalError = "You are not authenticated."
+        return res.redirect("/")
+    }
     
     const db = req.db
     const roomID = req.user.id
@@ -105,7 +153,8 @@ router.post("/delete", async (req, res) => {
         })
     } catch (error) {
         console.log(error);
-        res.render("index", {error: "Error deleting room."})
+        req.session.generalError = "Error deleting room."
+        res.redirect("/")
     }
 })
 

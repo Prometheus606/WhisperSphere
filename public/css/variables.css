@@ -1,0 +1,9 @@
+:root {
+    --bg-color: black;
+    --messagebox-bg-color: rgb(62, 176, 110);
+    --date-bg-color: grey;
+    --btn-bg-color: none;
+    --btn-bg-color-danger: rgb(218, 89, 89);
+    --fg-color-primary: white;
+    --fg-color-secondary: black;
+}

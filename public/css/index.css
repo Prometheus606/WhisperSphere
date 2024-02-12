@@ -1,0 +1,15 @@
+.form-container {
+    display: flex;
+    margin: 25vh auto;
+    width: 70%;
+}
+
+.join-container {
+    width: 50%;
+    text-align: center;
+}
+
+.create-container {
+    width: 50%;
+    text-align: center;
+}

@@ -1,15 +1,14 @@
 const router = require("express").Router()
 
 router.get("/", (req, res) => {
-    res.render("index")
-})
-
-router.get("/1", (req, res) => {
-    res.send("fail")
-})
-
-router.get("/2", (req, res) => {
-    res.send("loged in")
+    
+    params = {}
+    if (req.session.joinError) params.joinError = req.session.joinError
+    if (req.session.createError) params.createError = req.session.createError 
+    if (req.session.generalError) params.generalError = req.session.generalError 
+      
+    res.render("index", params)
+    
 })
 
 module.exports = router
