@@ -3,17 +3,14 @@
 <h1>Created new Chat Room!</h1>
 <p class="error-text">Careful! The following Room ID and Password is required to login to the Chatroom. This Information is not stored anywhere, please safe it somewhere.</p>
 <div class="newRoom-container">
-    <h3>Details</h3>
     <ul>
         <li>Room ID: <%= roomID %></li>
         <li>Password: <%= password %></li>
     </ul>
 
-    <a href="/" role="button" class="btn">Login</a>
+    <form action="/" method="get" class="form">
+        <input type="submit" name="submit" value="Login" class="btn">
+    </form>
 </div>                          
 
-
-
-
-</body>
-</html>
+<%- include("./partials/footer") %>

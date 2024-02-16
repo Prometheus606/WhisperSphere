@@ -35,5 +35,23 @@ app.use("/auth", require("./routes/auth"))
 app.use("/room", require("./routes/room"))
 
 
+// Middleware for custom error handling for not found routes
+app.use((req, res, next) => {
+  res.status(404).render("error", {
+    code: 404,
+    error: 'Sorry, the page was not found!'
+  });
+});
+
+// Middleware for general error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render("error", {
+    code: 500,
+    error: 'Something went wrong!'
+  });
+});
+
+
 // Start server
 app.listen(process.env.PORT || 3000, () => console.log(`Server is Listening on http://localhost:${process.env.PORT || 3000}`))

@@ -1,15 +1,22 @@
 .form-container {
-    display: flex;
-    margin: 25vh auto;
+    display: grid;
+    margin: 20vh auto;
     width: 70%;
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
 }
 
+.create-container,
 .join-container {
-    width: 50%;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .create-container {
-    width: 50%;
-    text-align: center;
+    justify-content: center;
+}
+
+.join-container {
+    justify-content: space-between;
 }

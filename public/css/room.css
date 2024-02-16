@@ -1,40 +1,78 @@
 .messages-container {
-    margin-top: 6.5rem;
     overflow-y: auto;
-    height: 80vh;
+    height: 78vh;
     display: flex;
     flex-direction: column;
     width: 70%;
-    margin: 0 auto;
+    margin: 2rem auto 5rem;
 }
 
 .message-box {
-    border: 1px solid black;
+    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     margin: 1rem auto;
-    background-color: var(--messagebox-bg-color);
+    background-color: var(--messagebox-bg-color-other);
     min-width: 15rem;
     max-width: 70%;
     border-radius: 1rem;
-    box-shadow: 0px 1px;
+    box-shadow: -2px -2px 10px 0px var(--box-shadow-color);
+}
+
+.messages-self {
+    background-color: var(--messagebox-bg-color-self);
 }
 
 .message-header {
     display: flex;
     justify-content: space-between;
-    margin: 0;
+    margin: 0px;
+    padding: 0px;
+}
+
+.message-footer {
+    display: flex;
+    justify-content: end;
+    margin: 0 0 .3rem 0;
+    padding: 0px;
+}
+
+.delete-message-btn {
+    margin-right: .5rem;
+    margin-top: .5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    margin-bottom: 0px;
+    padding: 0px;
+    font-size: .8rem;
+    transition: color 0.3s ease;
+}
+
+.delete-message-btn:hover {
+    color: var(--btn-bg-color-danger);
 }
 
 .message-username {
     font-weight: bolder;
     margin-left: .5rem;
+    margin-bottom: 0px;
+    padding: 0px;
+    font: var(--font-small);
+    font-weight: 900;
+    color: var(--fg-color-secondary);
 }
 
 .message-time {
     font-weight: lighter;
     font-style: italic;
     margin-right: .5rem;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+    font: var(--font-small);
+    font-style: italic;
+    color: var(--fg-color-secondary);
 }
 
 .message-body {
@@ -42,7 +80,8 @@
     text-align: start;
     margin: 0 .5rem;
     overflow-wrap: break-word;
-    color: var(--fg-color-secondary)
+    padding: 0px;
+    font: var(--font-regular);
 
 }
 
@@ -50,10 +89,13 @@
     width: fit-content;
     padding: 0px 1rem;
     background-color: var(--date-bg-color);
-    border: 1px solid black;
-    border-radius: .5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
     margin: 0 auto;
-    box-shadow: 0px 1px;
+    font: var(--font-regular);
+    box-shadow: -1px -1px 5px 0px var(--box-shadow-color);
+    color: var(--fg-color-secondary);
+    font-weight: 400;
 }
 
 .send-message-form {
@@ -61,4 +103,25 @@
     bottom: 1rem;
     width: 100%;
     text-align: center;
+}
+
+/* CSS für den Scrollbar-Pfeil (nur bei Bedarf) */
+.messages-container::-webkit-scrollbar-button {
+    display: none; /* Versteckt den Scrollbar-Pfeil */
+}
+
+/* CSS für den Scrollbar-Daumen, wenn die Maus darüber fährt */
+.messages-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-color-hover); /* Farbe des Scrollbar-Daumens beim Überfahren */
+}
+
+/* CSS für die Scrollbar-Spur */
+.messages-container::-webkit-scrollbar {
+    width: 10px; /* Versteckt die Scrollbar-Spur */
+}
+
+/* CSS für den Scrollbar-Daumen */
+.messages-container::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-color); /* Hintergrundfarbe des Scrollbar-Daumens */
+    border-radius: 10px; /* Abgerundete Ecken des Scrollbar-Daumens */
 }

@@ -1,3 +1,3 @@
-
-- font family, buttons, text inputs and colors
-- every user a diffrent color in chat room
+- responsiveness
+- bild 429 error seite komisch
+- forms sind nicht mittig
