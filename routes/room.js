@@ -117,10 +117,12 @@ router.post("/create", async (req, res) => {
         password = generatePassword(Math.floor((Math.random() * 8) + 12))
     }
 
-    // if (password.length < 8 || !/[0-9]/.test(password) || !/[a-zA-Z]/.test(password) || !/[^a-zA-Z0-9]/.test(password)) {
-    //     req.session.createError = "Password too weak! Please use at least 8 characters with 1 number, 1 letter, and 1 special character or leave it blank to generate one."
-    //     return res.redirect("/")
-    // }
+    if (process.env.NODE_ENV === 'production') {
+        if (password.length < 8 || !/[0-9]/.test(password) || !/[a-zA-Z]/.test(password) || !/[^a-zA-Z0-9]/.test(password)) {
+            req.session.createError = "Password too weak! Please use at least 8 characters with 1 number, 1 letter, and 1 special character or leave it blank to generate one."
+            return res.redirect("/")
+        }
+    }
 
     try {
         const passwordHash = await bcrypt.hash(password, 10)
@@ -141,14 +143,38 @@ router.post("/create", async (req, res) => {
     }
 })
 
+router.post("/delete-message", async (req, res) => {
+    const roomID = req.user.id
+    
+    if (!req.isAuthenticated() || roomID === parseInt(process.env.GLOBAL_CREDENTIALS)) {
+        req.session.generalError = "You are not authenticated."
+        return res.redirect("/")
+    }
+    
+    const messageID = req.body.messageID
+    const db = req.db
+
+    try {
+        await db.query("DELETE FROM messages WHERE id=$1", [messageID])
+
+        res.redirect("/room")
+
+    } catch (error) {
+        console.log(error);
+        req.session.generalError = "Error deleting message."
+        res.redirect("/room")
+    }
+})
+
 router.post("/delete", async (req, res) => {
-    if (!req.isAuthenticated()) {
+    const roomID = req.user.id
+
+    if (!req.isAuthenticated() || roomID === parseInt(process.env.GLOBAL_CREDENTIALS)) {
         req.session.generalError = "You are not authenticated."
         return res.redirect("/")
     }
     
     const db = req.db
-    const roomID = req.user.id
 
     try {
         await db.query("DELETE FROM messages WHERE room_id=$1", [roomID])

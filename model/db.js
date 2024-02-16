@@ -1,33 +1,50 @@
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
 
-    const pg = require("pg")
+    try {
+        const pg = require("pg")
+        const bcrypt = require("bcrypt")
 
-    const db = new pg.Client({
-        user: process.env.PG_USER,
-        password: process.env.PG_PW,
-        port: process.env.PG_PORT,
-        database: process.env.PG_DB,
-        host: process.env.PG_HOST
-    })
-    db.connect()
+        const db = new pg.Client({
+            user: process.env.PG_USER,
+            password: process.env.PG_PW,
+            port: process.env.PG_PORT,
+            database: process.env.PG_DB,
+            host: process.env.PG_HOST
+        })
+        db.connect()
+    
+        await db.query("CREATE TABLE IF NOT EXISTS rooms ( \
+            id SERIAL PRIMARY KEY, \
+            creationdate TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), \
+            password TEXT NOT NULL \
+        )")
+    
+        await db.query("CREATE TABLE IF NOT EXISTS messages ( \
+            id SERIAL PRIMARY KEY, \
+            creationdate TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), \
+            message TEXT NOT NULL, \
+            room_id INT NOT NULL, \
+            username TEXT NOT NULL, \
+            FOREIGN KEY (room_id) REFERENCES rooms(id) \
+        )")
+    
+        // create global chat if not exists (12345)
+        const globalCredentials = parseInt(process.env.GLOBAL_CREDENTIALS)
+        const result = await db.query("SELECT * FROM rooms WHERE id=$1", [globalCredentials])
+        if (result.rows == 0) {
+            const passwordHash = await bcrypt.hash(globalCredentials.toString(), 10)
+            await db.query("INSERT INTO rooms (id, password) VALUES ($1, $2)", [globalCredentials, passwordHash])
+        }
+        
+        req.db = db
 
-    db.query("CREATE TABLE IF NOT EXISTS rooms ( \
-        id SERIAL PRIMARY KEY, \
-        creationdate TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), \
-        password TEXT NOT NULL \
-    )")
+        next()
 
-    db.query("CREATE TABLE IF NOT EXISTS messages ( \
-        id SERIAL PRIMARY KEY, \
-        creationdate TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), \
-        message TEXT NOT NULL, \
-        room_id INT NOT NULL, \
-        username TEXT NOT NULL, \
-        FOREIGN KEY (room_id) REFERENCES rooms(id) \
-    )")
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send("Internal server Error")
+    }
 
-    req.db = db
-
-    next()
+    
 
 }

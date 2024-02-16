@@ -1,11 +1,13 @@
 <%- include("./partials/header") %>
 
 <div class="nav">
-    <div class="delete-room form">
-        <form action="/room/delete" method="post">
-            <input type="submit" value="Delete chat" class="btn btn-danger" placeholder="Enter your message">
-        </form>
-    </div>
+    <% if (roomID !== parseInt(process.env.GLOBAL_CREDENTIALS)) { %>
+        <div class="delete-room form">
+            <form action="/room/delete" method="post">
+                <input type="submit" value="Delete chat" class="btn btn-danger" placeholder="Enter your message">
+            </form>
+        </div>
+    <% } %>
     
     <div class="logout form">
         <form action="/auth/logout" method="get">
@@ -23,14 +25,34 @@
                 <p><%= messagesOnSameDay[0].creationDate %></p>
             </div>
             <% messagesOnSameDay.forEach(message => { %>
-                <div class="message-box">
+                <% if (message.userName === userName) { %>
+                    <div class="message-box messages-self">
+                <% } else { %>
+                    <div class="message-box">
+                <% } %>
                     <div class="message-header">
                         <p class="message-username"><%= message.userName %> </p>
-                        <p class="message-time"><%= message.creationTime %></p>
+                        
+                        <% if (message.userName === userName) { %>
+                            <form action="/room/delete-message" method="post">
+                                <!-- Trash-Symbol Button -->
+                                <input type="hidden" name="messageID" value="<%= message.messageID %>">
+                                <button type="submit" class="delete-message-btn">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        <% } %>
+                        
                     </div>
+
                     <div class="message-body">
                         <p class="message-text"><%= message.text %></p>
                     </div>
+
+                    <div class="message-footer">
+                        <p class="message-time"><%= message.creationTime %></p>
+                    </div>
+
                 </div>
             <% }) %>
         <% }) %>
