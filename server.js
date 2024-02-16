@@ -2,6 +2,8 @@
 const express = require("express")
 const session  = require("express-session")
 const passport = require('passport');
+const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
 
 // get environment variables
 require("dotenv").config()
@@ -11,9 +13,26 @@ const app = express()
 app.set("view engine", "ejs")
 
 // Middleware
+
+// Middleware to limit requests per IP address
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Maximum number of requests per IP
+    handler: function (req, res, next) {
+      res.status(429).render("error", {
+        code: 429,
+        error: 'Too many requests from this IP address. Please try again later.'
+      });
+    }
+  });
+
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(express.static("public"))
+
+if (process.env.NODE_ENV === 'production') app.use(limiter);
+  else app.use(morgan('dev'))
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
