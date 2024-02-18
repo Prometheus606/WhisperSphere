@@ -9,6 +9,7 @@ const settings = {
     passReqToCallback: true
 }
 
+// room login Strategy
 passport.use(new LocalStrategy(settings, async function(req, roomID, password, cb) {
     try {
         const result = await req.db.query("SELECT * FROM rooms WHERE id=$1", [roomID]);

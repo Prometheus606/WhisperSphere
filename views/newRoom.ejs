@@ -1,12 +1,12 @@
 <%- include("./partials/header") %>
 
 <h1>Created new Chat Room!</h1>
-<p class="error-text">Careful! The following Room ID and Password is required to login to the Chatroom. This Information is not stored anywhere, please safe it somewhere.</p>
 <div class="newRoom-container">
-    <ul>
-        <li>Room ID: <%= roomID %></li>
-        <li>Password: <%= password %></li>
-    </ul>
+    <p class="error-text">Careful! The following Room ID and Password is required to login to the Chatroom. <br>This Information is not stored anywhere, please safe it somewhere.</p>
+    <div class="room-details">
+        <p class="room-detail-text">Room ID: <%= roomID %></p>
+        <p class="room-detail-text">Password: <%= password %></p>
+    </div>
 
     <form action="/" method="get" class="form">
         <input type="submit" name="submit" value="Login" class="btn">

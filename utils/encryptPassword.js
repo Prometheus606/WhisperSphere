@@ -1,11 +1,24 @@
-const bcrypt = require("bcrypt")
+// this script encrypts any given passwort and log it in the console.
 
-const password = "12345"
+const bcrypt = require("bcrypt");
+const readline = require("readline");
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 const encrypt = async (password) => {
-    const passwordHash = await bcrypt.hash(password, 10)
+  try {
+    const passwordHash = await bcrypt.hash(password, 10);
+    console.log("Password hash:", passwordHash);
+  } catch (error) {
+    console.error("Error:", error);
+  } finally {
+    rl.close();
+  }
+};
 
-    console.log(passwordHash);
-}
-
-encrypt(password)
+rl.question("Enter password to encrypt: ", async (password) => {
+  await encrypt(password);
+});

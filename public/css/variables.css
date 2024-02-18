@@ -1,7 +1,8 @@
 :root {
 
     /* Color variables */
-    --bg-color: #12372A;
+    /* --bg-color: #12372A; */
+    --bg-color: linear-gradient(to right, #12372A, rgb(2, 43, 10));
     --messagebox-bg-color-self: #3b9258;
     --messagebox-bg-color-other: #436850;
     --date-bg-color: #ADBC9F;

@@ -1,4 +1,4 @@
-module.exports = async (req, res, next) => {
+const connectDB = async (req, res, next) => {
 
     try {
         const pg = require("pg")
@@ -42,9 +42,20 @@ module.exports = async (req, res, next) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send("Internal server Error")
+        return res.status(500).render("error", {
+            code: 500,
+            error:"Internal server Error"
+        })
     }
-
-    
-
 }
+
+const disconnectDB = (req, res, next) => {
+    res.on('finish', () => {
+        if (req.db) {
+          req.db.end();
+        }
+    });
+    next(); 
+  }
+
+module.exports = {connectDB, disconnectDB}

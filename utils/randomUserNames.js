@@ -1,3 +1,5 @@
+// this script generates a random user name from the words in the files nouns.js and adjectives.js
+
 const nounce = require("./nouns")
 const adjectives = require("./adjectives")
 

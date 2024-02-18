@@ -1,5 +1,6 @@
 const router = require("express").Router()
 
+// render home page
 router.get("/", (req, res) => {
     
     params = {}

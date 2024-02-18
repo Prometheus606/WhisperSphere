@@ -1,22 +1,31 @@
 <%- include("./partials/header") %>
 
 <div class="nav">
+
+    <!-- Button for deleting chatroom -->
     <% if (roomID !== parseInt(process.env.GLOBAL_CREDENTIALS)) { %>
         <div class="delete-room form">
             <form action="/room/delete" method="post">
-                <input type="submit" value="Delete chat" class="btn btn-danger" placeholder="Enter your message">
+                <button type="submit" class="delete-room-btn">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </form>
         </div>
     <% } %>
     
+    <!-- logout button -->
     <div class="logout form">
         <form action="/auth/logout" method="get">
-            <input type="submit" value="Logout" class="btn">
+            <button type="submit" class="delete-room-btn">
+                <div class="exit-door"></div>
+            </button>
         </form>
     </div>
 </div>
 
-<h1>Chatroom <%= roomID %> (User: <%= userName %>)</h1>
+<h1 class="room-header">Chatroom <%= roomID %></h1>
+<h3 class="room-subheader">User: <%= userName %></h1>
+
 
 <div class="messages-container" id="messages-container">
     <% if (locals.messages && locals.messages[0].length > 0) { %>
@@ -59,13 +68,15 @@
     <% } %>
 </div>
 
-<div class="send-message-form">
+<div class="send-message-container">
     <% if (locals.messagesError) { %>
         <p class="error-text"><%= messagesError %></p>
     <% } %>
     <form action="/room" method="post">
-        <input type="text" name="message" id="message" class="text-input" placeholder="Enter Message" required>
-        <input type="submit" value="Send" class="btn">
+        <div class="send-message-form"></div>
+            <input type="text" name="message" id="message" class="text-input" placeholder="Enter Message" required>
+            <input type="submit" value="Send" class="btn">
+        </div>
     </form>
 </div>
 

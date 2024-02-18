@@ -1,3 +1,0 @@
-- responsiveness
-- bild 429 error seite komisch
-- forms sind nicht mittig

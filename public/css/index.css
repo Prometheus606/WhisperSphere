@@ -4,6 +4,8 @@
     width: 70%;
     grid-template-columns: 1fr 1fr;
     text-align: center;
+    max-width: 800px;
+    gap: 3rem;
 }
 
 .create-container,
@@ -11,6 +13,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
 }
 
 .create-container {
@@ -19,4 +22,23 @@
 
 .join-container {
     justify-content: space-between;
+}
+
+.join-form,
+.create-form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+/***************** Media Queries *********************/
+
+@media (max-width: 720px) {
+    .form-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+        margin: 5vh auto;
+    }
 }

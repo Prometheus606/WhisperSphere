@@ -4,6 +4,7 @@ const generatePassword = require("../utils/randomKey")
 const bcrypt = require("bcrypt")
 
 
+// get messages and render room page
 router.get("/", async (req, res) => {
     if (!req.isAuthenticated()) {
         req.session.generalError = "You are not authenticated."
@@ -84,6 +85,7 @@ router.get("/", async (req, res) => {
     }
 })
 
+// save sendet message in db and reload room page
 router.post("/", async (req, res) => {
     if (!req.isAuthenticated()) {
         req.session.generalError = "You are not authenticated."
@@ -96,10 +98,13 @@ router.post("/", async (req, res) => {
     const userName = req.user.userName
 
     try {
+        console.log(message, process.env.MESSAGE_SECRET);
         const encryptedMessage = CryptoJS.AES.encrypt(message, process.env.MESSAGE_SECRET).toString();
+        console.log(encryptedMessage);
         
         await db.query("INSERT INTO messages (room_id, message, username) VALUES ($1, $2, $3)", [roomID, encryptedMessage, userName])
-    
+        console.log("test");
+
         res.redirect(`/room`)
 
     } catch (error) {
@@ -109,6 +114,7 @@ router.post("/", async (req, res) => {
     }
 })
 
+// creates a new room
 router.post("/create", async (req, res) => {
     const db = req.db
     let password = req.body.password
@@ -117,6 +123,7 @@ router.post("/create", async (req, res) => {
         password = generatePassword(Math.floor((Math.random() * 8) + 12))
     }
 
+    // check password quality if environment is set to production
     if (process.env.NODE_ENV === 'production') {
         if (password.length < 8 || !/[0-9]/.test(password) || !/[a-zA-Z]/.test(password) || !/[^a-zA-Z0-9]/.test(password)) {
             req.session.createError = "Password too weak! Please use at least 8 characters with 1 number, 1 letter, and 1 special character or leave it blank to generate one."
@@ -143,6 +150,7 @@ router.post("/create", async (req, res) => {
     }
 })
 
+// deletes messages
 router.post("/delete-message", async (req, res) => {
     const roomID = req.user.id
     
@@ -166,6 +174,7 @@ router.post("/delete-message", async (req, res) => {
     }
 })
 
+// delete chat room
 router.post("/delete", async (req, res) => {
     const roomID = req.user.id
 

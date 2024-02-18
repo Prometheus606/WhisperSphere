@@ -1,20 +1,15 @@
 <%- include("./partials/header") %>
 
-<h1 class="error-text"><%= error %></h1>
+<h2 class="error-text"><%= error %></h2>
 <div class="error-container">
     <img src="/images/errorcodes/<%= code %>.jpg" alt="Error image" class="error-img">
     <div class="test">
         <div class="overlay-text-container">
-            <% if (code === 404) { %>
                 <a href="http://www.freepik.com" class="overlay-text">Designed by stories / Freepik</a>
-            <% } else if (code === 500) { %>
-                <a href="http://www.freepik.com" class="overlay-text">Designed by stories / Freepik</a>
-            <% } else if (code === 429) { %>
-                <a href="http://www.freepik.com" class="overlay-text">Designed by stories / Freepik</a>
-            <% } %>
         </div>
     </div>
 </div>
+
 <form action="/" method="get" class="home-button">
     <input type="submit" value="Home" class="btn">
 </form>

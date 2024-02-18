@@ -1,6 +1,37 @@
+.delete-room-btn {
+    margin-right: .5rem;
+    margin-top: .5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    margin-bottom: 0px;
+    padding: 0px;
+    font-size: 2rem;
+    transition: color 0.3s ease;
+}
+
+.delete-room-btn:hover {
+    color: var(--btn-bg-color-danger);
+}
+
+.exit-door {
+    background-image: url("../images/exit-door.png");
+    width: 40px;
+    height: 40px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-left: 1rem;
+}
+
+.exit-door:hover {
+    width: 42px;
+    height: 42px;
+}
+
 .messages-container {
     overflow-y: auto;
-    height: 78vh;
+    height: 70vh;
     display: flex;
     flex-direction: column;
     width: 70%;
@@ -20,6 +51,7 @@
 }
 
 .messages-self {
+    /* Diffrent Color for messages that user himself has send */
     background-color: var(--messagebox-bg-color-self);
 }
 
@@ -98,30 +130,61 @@
     font-weight: 400;
 }
 
-.send-message-form {
+.send-message-container {
     position: fixed;
     bottom: 1rem;
     width: 100%;
     text-align: center;
 }
 
-/* CSS für den Scrollbar-Pfeil (nur bei Bedarf) */
-.messages-container::-webkit-scrollbar-button {
-    display: none; /* Versteckt den Scrollbar-Pfeil */
+.send-message-form {
+    display: flex;
 }
 
-/* CSS für den Scrollbar-Daumen, wenn die Maus darüber fährt */
-.messages-container::-webkit-scrollbar-thumb:hover {
-    background-color: var(--scrollbar-color-hover); /* Farbe des Scrollbar-Daumens beim Überfahren */
+.send-message-container .text-input {
+    width: 100%;
 }
 
-/* CSS für die Scrollbar-Spur */
-.messages-container::-webkit-scrollbar {
-    width: 10px; /* Versteckt die Scrollbar-Spur */
+/***************** Media Queries *********************/
+
+@media (max-width: 1200px) {
+    .room-header {
+        font-size: 40px;
+    }
+    .room-subheader {
+        font-size: 20px;
+    }
 }
 
-/* CSS für den Scrollbar-Daumen */
-.messages-container::-webkit-scrollbar-thumb {
-    background-color: var(--scrollbar-color); /* Hintergrundfarbe des Scrollbar-Daumens */
-    border-radius: 10px; /* Abgerundete Ecken des Scrollbar-Daumens */
+@media (max-width: 480px) {
+    .room-header {
+        font-size: 30px;
+    }
+    .room-subheader {
+        font-size: 15px;
+    }
+    .nav {
+        flex-direction: column-reverse;
+        align-items: flex-end;
+    }
+    .delete-room-btn {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    .exit-door {
+        width: 25px;
+        height: 25px;
+        margin-bottom: .5rem;
+    }
+    .exit-door:hover {
+        width: 27px;
+        height: 27px;
+    }
+    .messages-container {
+        width: 90%;
+        margin: 2rem auto 2rem;
+    }
+    .send-message-container .text-input {
+        width: 70%;
+    }
 }
