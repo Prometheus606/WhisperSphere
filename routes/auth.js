@@ -17,8 +17,11 @@ router.get("/loginFailure", (req, res, next) => {
 
 // login route
 router.post("/login", passport.authenticate("local", {
-    successRedirect: '/room',
-    failureRedirect: '/auth/loginFailure'
-}))
+    failureRedirect: '/auth/loginFailure',
+    passReqToCallback: true
+    
+}), (req, res) => {
+    res.redirect(`/room/${req.body.roomID}`)
+})
 
 module.exports = router

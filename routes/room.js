@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt")
 
 
 // get messages and render room page
-router.get("/", async (req, res) => {
+router.get("/:id", async (req, res) => {
     if (!req.isAuthenticated()) {
         req.session.generalError = "You are not authenticated."
         return res.redirect("/")
@@ -105,12 +105,12 @@ router.post("/", async (req, res) => {
         await db.query("INSERT INTO messages (room_id, message, username) VALUES ($1, $2, $3)", [roomID, encryptedMessage, userName])
         console.log("test");
 
-        res.redirect(`/room`)
+        res.redirect(`/room/${roomID}`)
 
     } catch (error) {
         console.log(error);
         req.session.messagesError = "Error sending Message."
-        res.redirect("/room")
+        res.redirect(`/room/${roomID}`)
     }
 })
 
@@ -165,12 +165,12 @@ router.post("/delete-message", async (req, res) => {
     try {
         await db.query("DELETE FROM messages WHERE id=$1", [messageID])
 
-        res.redirect("/room")
+        res.redirect(`/room/${roomID}`)
 
     } catch (error) {
         console.log(error);
         req.session.generalError = "Error deleting message."
-        res.redirect("/room")
+        res.redirect(`/room/${roomID}`)
     }
 })
 

@@ -4,7 +4,6 @@
     text-align: center;
     height: auto;
     min-height: 15rem;
-    border: 1px solid red;
     max-width: 800px;
 }
 
@@ -20,7 +19,6 @@
     flex-direction: column;
     margin-top: 3rem;
     margin-bottom: 3rem;
-    border: 1px solid black;
 }
 
 .room-detail-text {
