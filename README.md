@@ -1,5 +1,7 @@
 # Whisper Sphere: Anonymous Chat Application with Server-Side Rendering (SSR)
 
+![Todo List Screenshot](./public/images/screenshot.png)
+
 Welcome to Whisper Sphere, the anonymous chat application that allows users to connect anonymously and chat in real-time. Our server utilizes Server-Side Rendering (SSR) to render the user interface and provide functionality.
 
 ## Features
