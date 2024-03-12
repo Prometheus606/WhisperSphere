@@ -12,7 +12,7 @@ const settings = {
 // room login Strategy
 passport.use(new LocalStrategy(settings, async function(req, roomID, password, cb) {
     try {
-        const result = await req.db.query("SELECT * FROM rooms WHERE id=$1", [roomID]);
+        const result = await req.db.query("SELECT * FROM whisper_sphere_rooms WHERE id=$1", [roomID]);
 
         if (result.rows.length !== 1) return cb(null, false); // Make sure to return cb here
 

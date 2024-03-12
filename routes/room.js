@@ -15,7 +15,7 @@ router.get("/:id", async (req, res) => {
     const roomID = req.user.id
 
     try {
-        let result = await db.query("SELECT * FROM messages WHERE room_id=$1 ORDER BY creationdate ASC", [roomID])
+        let result = await db.query("SELECT * FROM whisper_sphere_messages WHERE room_id=$1 ORDER BY creationdate ASC", [roomID])
 
         const messages = []
         let messagesOnSameDay = []
@@ -100,7 +100,7 @@ router.post("/", async (req, res) => {
     try {
         const encryptedMessage = CryptoJS.AES.encrypt(message, process.env.MESSAGE_SECRET).toString();
         
-        await db.query("INSERT INTO messages (room_id, message, username) VALUES ($1, $2, $3)", [roomID, encryptedMessage, userName])
+        await db.query("INSERT INTO whisper_sphere_messages (room_id, message, username) VALUES ($1, $2, $3)", [roomID, encryptedMessage, userName])
 
         res.redirect(`/room/${roomID}`)
 
@@ -130,7 +130,7 @@ router.post("/create", async (req, res) => {
 
     try {
         const passwordHash = await bcrypt.hash(password, 10)
-        const result = await db.query("INSERT INTO rooms (password) VALUES ($1) RETURNING *", [passwordHash])
+        const result = await db.query("INSERT INTO whisper_sphere_rooms (password) VALUES ($1) RETURNING *", [passwordHash])
 
         res.render("newRoom", {
             success: true,
@@ -183,8 +183,8 @@ router.post("/delete", async (req, res) => {
     const db = req.db
 
     try {
-        await db.query("DELETE FROM messages WHERE room_id=$1", [roomID])
-        await db.query("DELETE FROM rooms WHERE id=$1", [roomID])
+        await db.query("DELETE FROM whisper_sphere_messages WHERE room_id=$1", [roomID])
+        await db.query("DELETE FROM whisper_sphere_rooms WHERE id=$1", [roomID])
 
         res.render("index", {
             error: `Successful deleted room ${roomID}.`

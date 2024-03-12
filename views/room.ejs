@@ -3,7 +3,7 @@
 <div class="nav">
 
     <!-- Button for deleting chatroom -->
-    <% if (roomID !== parseInt(process.env.GLOBAL_CREDENTIALS)) { %>
+    <% if (locals.roomID !== parseInt(process.env.GLOBAL_CREDENTIALS)) { %>
         <div class="delete-room form">
             <form action="/room/delete" method="post">
                 <button type="submit" class="delete-room-btn">
