@@ -98,12 +98,9 @@ router.post("/", async (req, res) => {
     const userName = req.user.userName
 
     try {
-        console.log(message, process.env.MESSAGE_SECRET);
         const encryptedMessage = CryptoJS.AES.encrypt(message, process.env.MESSAGE_SECRET).toString();
-        console.log(encryptedMessage);
         
         await db.query("INSERT INTO messages (room_id, message, username) VALUES ($1, $2, $3)", [roomID, encryptedMessage, userName])
-        console.log("test");
 
         res.redirect(`/room/${roomID}`)
 

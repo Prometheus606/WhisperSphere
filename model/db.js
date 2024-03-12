@@ -9,6 +9,7 @@ const connectDB = async (req, res, next) => {
         if (process.env.PG_URL) {
             db = new pg.Client({
                 connectionString: process.env.PG_URL,
+                ssl: true
             })
         } else {
             db = new pg.Client({
@@ -16,7 +17,8 @@ const connectDB = async (req, res, next) => {
                 password: process.env.PG_PW,
                 port: process.env.PG_PORT,
                 database: process.env.PG_DB,
-                host: process.env.PG_HOST
+                host: process.env.PG_HOST,
+                ssl: true
             })
         }
         db.connect()
