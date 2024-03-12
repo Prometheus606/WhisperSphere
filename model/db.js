@@ -4,13 +4,21 @@ const connectDB = async (req, res, next) => {
         const pg = require("pg")
         const bcrypt = require("bcrypt")
 
-        const db = new pg.Client({
-            user: process.env.PG_USER,
-            password: process.env.PG_PW,
-            port: process.env.PG_PORT,
-            database: process.env.PG_DB,
-            host: process.env.PG_HOST
-        })
+        let db;
+
+        if (process.env.PG_URL) {
+            db = new pg.Client({
+                connectionString: process.env.PG_URL,
+            })
+        } else {
+            db = new pg.Client({
+                user: process.env.PG_USER,
+                password: process.env.PG_PW,
+                port: process.env.PG_PORT,
+                database: process.env.PG_DB,
+                host: process.env.PG_HOST
+            })
+        }
         db.connect()
     
         await db.query("CREATE TABLE IF NOT EXISTS rooms ( \
@@ -56,6 +64,6 @@ const disconnectDB = (req, res, next) => {
         }
     });
     next(); 
-  }
+}
 
 module.exports = {connectDB, disconnectDB}
