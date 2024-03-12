@@ -1,6 +1,6 @@
 // import requirements
 const express = require("express")
-const session  = require("express-session")
+const cookieSession  = require("cookie-session")
 const passport = require('passport');
 const morgan = require('morgan');
 
@@ -10,6 +10,7 @@ require("dotenv").config()
 // setup Server
 const app = express()
 app.set("view engine", "ejs")
+app.set('trust proxy', 1);
 
 // Middleware
 app.use(express.urlencoded({extended: false}))
@@ -20,11 +21,12 @@ app.use(express.static("public"))
 if (process.env.NODE_ENV === 'production') app.use(require("./middleware/limiter"));
   else app.use(morgan('dev'))
 
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {maxAge: 1000 * 60 * 60 * 24}
+app.use(cookieSession({
+  name: 'session',
+  keys: [process.env.SESSION_SECRET],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 
 
